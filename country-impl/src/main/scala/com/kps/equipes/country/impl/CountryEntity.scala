@@ -12,7 +12,7 @@ class CountryEntity extends PersistentEntity {
   override def initialState = CountryState(None)
 
   override def behavior: Behavior = {
-    case CountryState(none)          => newEntity
+    case CountryState(None)          => newEntity
     case CountryState(Some(country)) => existingEntity
   }
 

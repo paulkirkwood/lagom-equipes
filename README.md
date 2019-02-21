@@ -1,0 +1,2 @@
+# lagom-equipes
+Lagom sampler

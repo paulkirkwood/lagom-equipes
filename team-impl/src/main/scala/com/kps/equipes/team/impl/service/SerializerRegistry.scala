@@ -1,9 +1,16 @@
-package com.kps.equipes.team.impl
-      
+package com.kps.equipes.team.impl.service
+ 
+import com.kps.equipes.team.api.Team
+import com.kps.equipes.team.impl.eventsourcing._
 import com.lightbend.lagom.scaladsl.playjson.{JsonSerializerRegistry, JsonSerializer}
 
 object TeamSerializerRegistry extends JsonSerializerRegistry {
   override def serializers = List(
+
+    /**
+      * Entity
+      */
+    JsonSerializer[Team],
 
     /**
       * State

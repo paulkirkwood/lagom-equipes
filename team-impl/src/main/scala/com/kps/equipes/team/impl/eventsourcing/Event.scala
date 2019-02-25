@@ -1,4 +1,4 @@
-package com.kps.equipes.team.impl
+package com.kps.equipes.team.impl.eventsourcing
 
 import com.kps.equipes.team.api.Team
 import com.lightbend.lagom.scaladsl.persistence.{AggregateEvent, AggregateEventShards, AggregateEventTag}

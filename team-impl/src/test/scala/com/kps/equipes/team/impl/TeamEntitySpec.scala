@@ -4,6 +4,8 @@ import akka.Done
 import akka.actor.ActorSystem
 import akka.testkit.TestKit
 import com.kps.equipes.team.api.Team
+import com.kps.equipes.team.impl.eventsourcing._
+import com.kps.equipes.team.impl.service.TeamSerializerRegistry
 import com.lightbend.lagom.scaladsl.persistence.PersistentEntity.InvalidCommandException
 import com.lightbend.lagom.scaladsl.playjson.JsonSerializerRegistry
 import com.lightbend.lagom.scaladsl.server.LocalServiceLocator

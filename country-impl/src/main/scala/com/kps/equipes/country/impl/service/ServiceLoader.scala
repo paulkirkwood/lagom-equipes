@@ -1,6 +1,7 @@
-package com.kps.equipes.country.impl
+package com.kps.equipes.country.impl.service
 
 import com.kps.equipes.country.api.CountryService
+import com.kps.equipes.country.impl.eventsourcing.{CountryEntity, CountryProcessor, CountryRepository}
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
 import com.lightbend.lagom.scaladsl.dns.DnsServiceLocatorComponents
 import com.lightbend.lagom.scaladsl.persistence.cassandra.CassandraPersistenceComponents
@@ -26,9 +27,11 @@ abstract class CountryApplication(context: LagomApplicationContext)
 
   override lazy val lagomServer = serverFor[CountryService](wire[CountryServiceImpl])
 
+  lazy val countryRepository: CountryRepository = wire[CountryRepository];
+
   override def jsonSerializerRegistry = CountrySerializerRegistry
 
   persistentEntityRegistry.register(wire[CountryEntity])
 
-  readSide.register(wire[CountryEventProcessor])
+  readSide.register(wire[CountryProcessor])
 }

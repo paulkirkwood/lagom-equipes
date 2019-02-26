@@ -9,7 +9,7 @@ import com.lightbend.lagom.scaladsl.server.{LagomApplication, LagomApplicationCo
 import com.softwaremill.macwire._
 import play.api.libs.ws.ahc.AhcWSComponents
 
-class TeamLoader extends LagomApplicationLoader {
+class TeamApplicationLoader extends LagomApplicationLoader {
 
   override def loadDevMode(context: LagomApplicationContext) =
     new TeamApplication(context) with LagomDevModeComponents

@@ -2,7 +2,7 @@ package com.kps.equipes.country.impl
 
 import com.kps.equipes.country.api.{CountryService,
                                     CreateCountryRequest}
-import com.kps.equipes.country.impl.service.CountryApplication
+import com.kps.equipes.country.impl.service.CountryServiceApplication
 import com.lightbend.lagom.scaladsl.server.LocalServiceLocator
 import com.lightbend.lagom.scaladsl.testkit.ServiceTest._
 import java.util.UUID
@@ -13,7 +13,7 @@ import scala.concurrent.{Future, Promise}
 class CountryServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndAfterAll {
 
   val server = startServer(defaultSetup.withCassandra(true)) { ctx =>
-    new CountryApplication(ctx) with LocalServiceLocator
+    new CountryServiceApplication(ctx) with LocalServiceLocator
   }
   
   val countryService: CountryService = server.serviceClient.implement[CountryService]

@@ -35,7 +35,7 @@ class CountryRepository(session: CassandraSession)(implicit ec: ExecutionContext
 
   def createPreparedStatements: Future[Done] = {
     for{
-      insert <- session.prepare("INSERT INTO countries(id, name, active) VALUES (?, ?, ?)")
+      insert <- session.prepare("INSERT INTO countries(id, name, isoCode) VALUES (?, ?, ?)")
     } yield{
       insertCountryStatement = insert
       Done

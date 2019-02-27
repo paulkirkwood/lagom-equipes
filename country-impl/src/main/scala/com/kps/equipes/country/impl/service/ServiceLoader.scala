@@ -2,36 +2,41 @@ package com.kps.equipes.country.impl.service
 
 import com.kps.equipes.country.api.CountryService
 import com.kps.equipes.country.impl.eventsourcing.{CountryEntity, CountryProcessor, CountryRepository}
+import com.lightbend.lagom.scaladsl.api.ServiceLocator
+import com.lightbend.lagom.scaladsl.api.ServiceLocator.NoServiceLocator
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
-import com.lightbend.lagom.scaladsl.dns.DnsServiceLocatorComponents
 import com.lightbend.lagom.scaladsl.persistence.cassandra.CassandraPersistenceComponents
-import com.lightbend.lagom.scaladsl.server.{LagomApplication, LagomApplicationContext, LagomApplicationLoader}
+import com.lightbend.lagom.scaladsl.server._
 import com.softwaremill.macwire._
 import play.api.libs.ws.ahc.AhcWSComponents
 
-class CountryApplicationLoader extends LagomApplicationLoader {
+class CountryServiceLoader extends LagomApplicationLoader {
 
-  override def loadDevMode(context: LagomApplicationContext) =
-    new CountryApplication(context) with LagomDevModeComponents
+  override def load(context: LagomApplicationContext): LagomApplication =
+    new CountryServiceApplication(context) {
+      override def serviceLocator: ServiceLocator = NoServiceLocator
+    }
 
-  override def load(context: LagomApplicationContext) =
-    new CountryApplication(context) with DnsServiceLocatorComponents
-
-  override def describeService = Some(readDescriptor[CountryService])
+  override def loadDevMode(context: LagomApplicationContext): LagomApplication =
+    new CountryServiceApplication(context) with LagomDevModeComponents
 }
 
-abstract class CountryApplication(context: LagomApplicationContext)
+abstract class CountryServiceApplication(context: LagomApplicationContext)
   extends LagomApplication(context)
     with CassandraPersistenceComponents
     with AhcWSComponents {
 
+  // Bind to the service
   override lazy val lagomServer = serverFor[CountryService](wire[CountryServiceImpl])
 
-  lazy val countryRepository: CountryRepository = wire[CountryRepository];
+  //Register the JSON serializer registry
+  override lazy val jsonSerializerRegistry: CountrySerializerRegistry.type = CountrySerializerRegistry
 
-  override def jsonSerializerRegistry = CountrySerializerRegistry
-
+  // Register the lagom persistent entity
   persistentEntityRegistry.register(wire[CountryEntity])
 
+  lazy val repository: CountryRepository = wire[CountryRepository]
+
+  // Register the lagom persistent read side processor persistent entity
   readSide.register(wire[CountryProcessor])
 }

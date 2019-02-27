@@ -1,7 +1,7 @@
 package com.kps.equipes.team.impl
 
 import com.kps.equipes.team.api._
-import com.kps.equipes.team.impl.service.TeamApplication
+import com.kps.equipes.team.impl.service.TeamServiceApplication
 import com.lightbend.lagom.scaladsl.api.transport.BadRequest
 import com.lightbend.lagom.scaladsl.server.LocalServiceLocator
 import com.lightbend.lagom.scaladsl.testkit.ServiceTest._
@@ -11,7 +11,7 @@ import org.scalatest.{AsyncWordSpec, BeforeAndAfterAll, Matchers}
 class TeamServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndAfterAll {
 
   val server = startServer(defaultSetup.withCassandra(true)) { ctx =>
-    new TeamApplication(ctx) with LocalServiceLocator
+    new TeamServiceApplication(ctx) with LocalServiceLocator
   }
 
   val teamService = server.serviceClient.implement[TeamService]

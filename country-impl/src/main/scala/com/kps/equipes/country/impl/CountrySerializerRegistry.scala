@@ -1,7 +1,6 @@
-package com.kps.equipes.country.impl.service
+package com.kps.equipes.country.impl
 
 import com.kps.equipes.country.api.Country
-import com.kps.equipes.country.impl.eventsourcing._
 import com.lightbend.lagom.scaladsl.playjson.{JsonSerializerRegistry, JsonSerializer}
 
 object CountrySerializerRegistry extends JsonSerializerRegistry {

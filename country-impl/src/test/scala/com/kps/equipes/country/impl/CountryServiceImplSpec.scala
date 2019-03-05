@@ -2,7 +2,6 @@ package com.kps.equipes.country.impl
 
 import com.kps.equipes.country.api.{CountryService,
                                     CreateCountryRequest}
-import com.kps.equipes.country.impl.service.CountryServiceApplication
 import com.lightbend.lagom.scaladsl.server.LocalServiceLocator
 import com.lightbend.lagom.scaladsl.testkit.ServiceTest._
 import java.util.UUID

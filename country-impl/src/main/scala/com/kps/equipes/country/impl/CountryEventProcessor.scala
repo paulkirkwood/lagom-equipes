@@ -1,4 +1,4 @@
-package com.kps.equipes.country.impl.eventsourcing
+package com.kps.equipes.country.impl
 
 import com.lightbend.lagom.scaladsl.persistence.cassandra.{CassandraReadSide, CassandraSession}
 import com.lightbend.lagom.scaladsl.persistence.{AggregateEventTag, ReadSideProcessor} 

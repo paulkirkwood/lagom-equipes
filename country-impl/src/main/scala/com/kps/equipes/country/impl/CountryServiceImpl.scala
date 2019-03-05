@@ -1,4 +1,4 @@
-package com.kps.equipes.country.impl.service
+package com.kps.equipes.country.impl
        
 import akka.{Done,NotUsed}
 import com.kps.equipes.country.api.{Country,
@@ -6,7 +6,6 @@ import com.kps.equipes.country.api.{Country,
                                     CreateCountryResponse,
                                     GetCountriesResponse,
                                     CountryService}
-import com.kps.equipes.country.impl.eventsourcing._
 import com.lightbend.lagom.scaladsl.api.ServiceCall
 import com.lightbend.lagom.scaladsl.api.transport.{BadRequest, NotFound}
 import com.lightbend.lagom.scaladsl.persistence.{PersistentEntityRef, PersistentEntityRegistry}

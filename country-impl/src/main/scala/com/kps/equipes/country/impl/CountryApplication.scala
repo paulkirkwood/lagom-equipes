@@ -1,7 +1,6 @@
-package com.kps.equipes.country.impl.service
+package com.kps.equipes.country.impl
 
 import com.kps.equipes.country.api.CountryService
-import com.kps.equipes.country.impl.eventsourcing.{CountryEntity, CountryProcessor, CountryRepository}
 import com.lightbend.lagom.scaladsl.api.ServiceLocator
 import com.lightbend.lagom.scaladsl.api.ServiceLocator.NoServiceLocator
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents

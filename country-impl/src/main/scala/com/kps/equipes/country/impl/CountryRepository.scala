@@ -1,4 +1,4 @@
-package com.kps.equipes.country.impl.eventsourcing
+package com.kps.equipes.country.impl
 
 import akka.Done
 import com.datastax.driver.core.{BoundStatement, PreparedStatement, Row}

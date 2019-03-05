@@ -1,6 +1,7 @@
 package com.kps.equipes.team.impl.service
 
 import akka.{Done, NotUsed}
+import com.kps.equipes.country.api.CountryService
 import com.kps.equipes.team.api.{CreateTeamRequest,
                                  CreateTeamResponse,
                                  ChangeTeamNameRequest,
@@ -16,6 +17,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext
 
 class TeamServiceImpl(teamRepository: TeamRepository,
+                      countryService: CountryService,
                       persistentEntityRegistry: PersistentEntityRegistry
                      )(implicit ec: ExecutionContext) extends TeamService{
 
@@ -24,8 +26,13 @@ class TeamServiceImpl(teamRepository: TeamRepository,
 
   override def createTeam: ServiceCall[CreateTeamRequest, CreateTeamResponse] =
     ServiceCall { req =>
-      val id = UUID.randomUUID()
-      teamEntityRef(id).ask(CreateTeam(Team(id, req.name, true))).map { _ => CreateTeamResponse(id) }
+      countryService.getCountryByISOCode(req.isoCode).invoke().flatMap { country =>
+        val id = UUID.randomUUID()
+        val team = Team(id, req.name, true, country.id)
+        teamEntityRef(id).ask(CreateTeam(team)).map { _ => CreateTeamResponse(id) }
+      }.recover {
+        case e: NotFound => throw NotFound("Invalid ISOCode specified")
+      }
     }
 
   override def getTeam(teamId: UUID): ServiceCall[NotUsed, Team] =
@@ -52,6 +59,6 @@ class TeamServiceImpl(teamRepository: TeamRepository,
 
   override def getTeamByName(name: String): ServiceCall[NotUsed, Team] =
     ServiceCall { _ =>
-      teamRepository.getTeamByName(name).map(team => Team(team.get.id, team.get.name, team.get.active))
+      teamRepository.getTeamByName(name).map(team => Team(team.get.id, team.get.name, team.get.active, team.get.countryId))
     }
 }

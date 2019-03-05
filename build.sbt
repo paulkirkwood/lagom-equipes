@@ -8,16 +8,16 @@ val macwire = "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.4" % Test
 
 lazy val `lagom-equipes` = (project in file("."))
-  .aggregate(`country-api`, `country-impl`, `team-api`, `team-impl`)
+  .aggregate(countryApi, countryImpl, teamApi, teamImpl)
 
-lazy val `country-api` = (project in file("country-api"))
+lazy val countryApi = (project in file("country-api"))
   .settings(
     libraryDependencies ++= Seq(
       lagomScaladslApi
     )
   )
 
-lazy val `country-impl` = (project in file("country-impl"))
+lazy val countryImpl = (project in file("country-impl"))
   .enablePlugins(LagomScala)
   .settings(
     libraryDependencies ++= Seq(
@@ -29,16 +29,16 @@ lazy val `country-impl` = (project in file("country-impl"))
     )
   )
   .settings(lagomForkedTestSettings: _*)
-  .dependsOn(`country-api`)
+  .dependsOn(countryApi)
 
-lazy val `team-api` = (project in file("team-api"))
+lazy val teamApi = (project in file("team-api"))
   .settings(
     libraryDependencies ++= Seq(
       lagomScaladslApi
     )
   )
 
-lazy val `team-impl` = (project in file("team-impl"))
+lazy val teamImpl = (project in file("team-impl"))
   .enablePlugins(LagomScala)
   .settings(
     libraryDependencies ++= Seq(
@@ -50,7 +50,7 @@ lazy val `team-impl` = (project in file("team-impl"))
     )
   )
   .settings(lagomForkedTestSettings: _*)
-  .dependsOn(`team-api`)
+  .dependsOn(countryApi, teamApi)
 
 lagomCassandraEnabled in ThisBuild := false
 lagomUnmanagedServices in ThisBuild := Map("cas_native" -> "http://localhost:9042")

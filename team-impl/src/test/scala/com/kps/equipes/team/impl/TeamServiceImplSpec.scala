@@ -11,7 +11,9 @@ import org.scalatest.{AsyncWordSpec, BeforeAndAfterAll, Matchers}
 class TeamServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndAfterAll {
 
   val server = startServer(defaultSetup.withCassandra(true)) { ctx =>
-    new TeamServiceApplication(ctx) with LocalServiceLocator
+    new TeamServiceApplication(ctx) with LocalServiceLocator {
+      override lazy val countryService = new CountryServiceStub
+    }
   }
 
   val teamService = server.serviceClient.implement[TeamService]
@@ -21,7 +23,7 @@ class TeamServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
   "team-service" should {
     "create a team" in {
       for {
-        answer   <- teamService.createTeam.invoke(CreateTeamRequest("Team Sky"))
+        answer   <- teamService.createTeam.invoke(CreateTeamRequest("Team Sky", "GBR"))
         response <- teamService.getTeam(answer.id).invoke()
       } yield {
         response.name should equal("Team Sky")
@@ -31,7 +33,7 @@ class TeamServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
 
     "change a team's name" in {
       for {
-        answer   <- teamService.createTeam.invoke(CreateTeamRequest("Sem-France Loire"))
+        answer   <- teamService.createTeam.invoke(CreateTeamRequest("Sem-France Loire", "FRA"))
         _        <- teamService.changeTeamName(answer.id).invoke(ChangeTeamNameRequest("Skil-Mavic"))
         response <- teamService.getTeam(answer.id).invoke()
       } yield {
@@ -42,7 +44,7 @@ class TeamServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
 
     "disband a team" in {
       for {
-        answer <- teamService.createTeam.invoke(CreateTeamRequest("KAS"))
+        answer <- teamService.createTeam.invoke(CreateTeamRequest("KAS", "ESP"))
         _      <- teamService.changeTeamStatus(answer.id).invoke(ChangeTeamStatusRequest(false))
         response <- teamService.getTeam(answer.id).invoke()
       } yield {
@@ -52,7 +54,7 @@ class TeamServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
 
     "find a team by it's name" in {
       for {
-        answer   <- teamService.createTeam.invoke(CreateTeamRequest("Panasonic"))
+        answer   <- teamService.createTeam.invoke(CreateTeamRequest("Panasonic", "NED"))
         response <- teamService.getTeamByName("Panasonic").invoke()
       } yield {
         response.id should equal(answer.id)

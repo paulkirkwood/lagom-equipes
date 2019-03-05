@@ -1,5 +1,6 @@
 package com.kps.equipes.team.impl.service
 
+import com.kps.equipes.country.api.CountryService
 import com.kps.equipes.team.api.TeamService
 import com.kps.equipes.team.impl.eventsourcing.{TeamEntity, TeamProcessor, TeamRepository}
 import com.lightbend.lagom.scaladsl.api.ServiceLocator
@@ -35,4 +36,6 @@ abstract class TeamServiceApplication(context: LagomApplicationContext)
   persistentEntityRegistry.register(wire[TeamEntity])
 
   readSide.register(wire[TeamProcessor])
+
+  lazy val countryService = serviceClient.implement[CountryService]
 }

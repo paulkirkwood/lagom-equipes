@@ -53,14 +53,14 @@ class TeamEntity extends PersistentEntity {
           ctx.reply(Done)
           ctx.done
         case (ChangeTeamName(newName), ctx, state) =>
-          ctx.thenPersist(TeamNameChanged(Team(state.team.get.id, newName, state.team.get.active)))(_ => ctx.reply(Done))
+          ctx.thenPersist(TeamNameChanged(Team(state.team.get.id, newName, state.team.get.active, state.team.get.countryId)))(_ => ctx.reply(Done))
       }
       .onCommand[ChangeTeamStatus, Done] {
         case (ChangeTeamStatus(active), ctx, state) if state.team.get.active == active =>
           ctx.reply(Done)
           ctx.done
         case (ChangeTeamStatus(active), ctx, state) =>
-          ctx.thenPersist(TeamStatusChanged(Team(state.team.get.id, state.team.get.name, active)))(_ => ctx.reply(Done))
+          ctx.thenPersist(TeamStatusChanged(Team(state.team.get.id, state.team.get.name, active, state.team.get.countryId)))(_ => ctx.reply(Done))
       }
       .onEvent {
         case (TeamNameChanged(team), state) => state.changeName(team.name)

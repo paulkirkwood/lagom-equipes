@@ -38,7 +38,7 @@ trait TeamService extends Service {
 /**
   * Requests
   */
-case class CreateTeamRequest(name: String)
+case class CreateTeamRequest(name: String, isoCode: String)
 object CreateTeamRequest {
   implicit val format: Format[CreateTeamRequest] = Json.format
 }

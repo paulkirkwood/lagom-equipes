@@ -18,7 +18,8 @@ class TeamRepository(session: CassandraSession)(implicit ec: ExecutionContext) {
         |CREATE TABLE IF NOT EXISTS teams(
         |id UUID PRIMARY KEY,
         |name TEXT,
-        |active BOOLEAN
+        |active BOOLEAN,
+        |countryId UUID
         |);
       """.stripMargin)
 
@@ -31,7 +32,7 @@ class TeamRepository(session: CassandraSession)(implicit ec: ExecutionContext) {
 
   def createPreparedStatements: Future[Done] = {
     for{
-      insert       <- session.prepare("INSERT INTO teams(id, name, active) VALUES (?, ?, ?)")
+      insert       <- session.prepare("INSERT INTO teams(id, name, active, countryId) VALUES (?, ?, ?, ?)")
       updateName   <- session.prepare("UPDATE teams SET name = ? WHERE id = ?")
       updateActive <- session.prepare("UPDATE teams SET active = ? WHERE id = ?")
     } yield{
@@ -47,6 +48,7 @@ class TeamRepository(session: CassandraSession)(implicit ec: ExecutionContext) {
     teamBindStatement.setUUID("id", team.id)
     teamBindStatement.setString("name", team.name)
     teamBindStatement.setBool("active", team.active)
+    teamBindStatement.setUUID("countryId", team.countryId)
     Future.successful(List(teamBindStatement))
   }
 
@@ -77,5 +79,5 @@ class TeamRepository(session: CassandraSession)(implicit ec: ExecutionContext) {
     )
 
   private def convertTeam(teamRow: Row): Team =
-    Team(teamRow.getUUID("id"), teamRow.getString("name"), teamRow.getBool("active"))
+    Team(teamRow.getUUID("id"), teamRow.getString("name"), teamRow.getBool("active"), teamRow.getUUID("countryId"))
 }

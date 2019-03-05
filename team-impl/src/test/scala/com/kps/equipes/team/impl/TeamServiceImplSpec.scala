@@ -1,7 +1,6 @@
 package com.kps.equipes.team.impl
 
 import com.kps.equipes.team.api._
-import com.kps.equipes.team.impl.service.TeamServiceApplication
 import com.lightbend.lagom.scaladsl.api.transport.BadRequest
 import com.lightbend.lagom.scaladsl.server.LocalServiceLocator
 import com.lightbend.lagom.scaladsl.testkit.ServiceTest._

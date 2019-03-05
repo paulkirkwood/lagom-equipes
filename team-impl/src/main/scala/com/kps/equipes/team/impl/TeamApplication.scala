@@ -1,8 +1,7 @@
-package com.kps.equipes.team.impl.service
+package com.kps.equipes.team.impl
 
 import com.kps.equipes.country.api.CountryService
 import com.kps.equipes.team.api.TeamService
-import com.kps.equipes.team.impl.eventsourcing.{TeamEntity, TeamProcessor, TeamRepository}
 import com.lightbend.lagom.scaladsl.api.ServiceLocator
 import com.lightbend.lagom.scaladsl.api.ServiceLocator.NoServiceLocator
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents

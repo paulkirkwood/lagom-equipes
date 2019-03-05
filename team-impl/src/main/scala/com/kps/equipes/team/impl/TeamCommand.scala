@@ -1,4 +1,4 @@
-package com.kps.equipes.team.impl.eventsourcing
+package com.kps.equipes.team.impl
 
 import akka.Done
 import com.kps.equipes.team.api.Team

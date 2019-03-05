@@ -1,4 +1,4 @@
-package com.kps.equipes.team.impl.service
+package com.kps.equipes.team.impl
 
 import akka.{Done, NotUsed}
 import com.kps.equipes.country.api.CountryService
@@ -9,7 +9,6 @@ import com.kps.equipes.team.api.{CreateTeamRequest,
                                  GetTeamsResponse,
                                  Team,
                                  TeamService}
-import com.kps.equipes.team.impl.eventsourcing._
 import com.lightbend.lagom.scaladsl.api.ServiceCall
 import com.lightbend.lagom.scaladsl.api.transport.{BadRequest, NotFound}
 import com.lightbend.lagom.scaladsl.persistence.{PersistentEntityRef, PersistentEntityRegistry}

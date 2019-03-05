@@ -1,7 +1,6 @@
-package com.kps.equipes.team.impl.service
+package com.kps.equipes.team.impl
  
 import com.kps.equipes.team.api.Team
-import com.kps.equipes.team.impl.eventsourcing._
 import com.lightbend.lagom.scaladsl.playjson.{JsonSerializerRegistry, JsonSerializer}
 
 object TeamSerializerRegistry extends JsonSerializerRegistry {

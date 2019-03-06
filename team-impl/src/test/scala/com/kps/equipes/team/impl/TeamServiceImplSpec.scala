@@ -6,11 +6,13 @@ import com.lightbend.lagom.scaladsl.server.LocalServiceLocator
 import com.lightbend.lagom.scaladsl.testkit.ServiceTest._
 import java.util.UUID
 import org.scalatest.{AsyncWordSpec, BeforeAndAfterAll, Matchers}
+import scala.concurrent.duration._
+import scala.concurrent.{Future, Promise}
 
 class TeamServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndAfterAll {
 
   val server = startServer(defaultSetup.withCassandra(true)) { ctx =>
-    new TeamServiceApplication(ctx) with LocalServiceLocator {
+    new TeamApplication(ctx) with LocalServiceLocator {
       override lazy val countryService = new CountryServiceStub
     }
   }
@@ -41,6 +43,25 @@ class TeamServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
       }
     }
 
+    "get all the teams" in {
+      (for {
+        panasonicID <- teamService.createTeam.invoke(CreateTeamRequest("Panasonic", "NED"))
+        kasID       <- teamService.createTeam.invoke(CreateTeamRequest("KAS", "ESP"))
+        semID       <- teamService.createTeam.invoke(CreateTeamRequest("Sem", "FRA"))
+        panasonic   <- teamService.getTeam(panasonicID.id).invoke()
+        kas         <- teamService.getTeam(kasID.id).invoke()
+        sem         <- teamService.getTeam(semID.id).invoke()
+      } yield {
+        awaitSuccess() {
+          for {
+            response <- teamService.getTeams.invoke
+          } yield {
+            response.teams should contain allOf(panasonic, kas, sem)
+          }
+        }
+      }).flatMap(identity)
+    }
+
     "disband a team" in {
       for {
         answer <- teamService.createTeam.invoke(CreateTeamRequest("KAS", "ESP"))
@@ -51,15 +72,14 @@ class TeamServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
       }
     }
 
-    "find a team by it's name" in {
-      for {
-        answer   <- teamService.createTeam.invoke(CreateTeamRequest("Panasonic", "NED"))
-        response <- teamService.getTeamByName("Panasonic").invoke()
-      } yield {
-        response.id should equal(answer.id)
-      }
-    }
-  }
+    //"find a team by it's name" in {
+    //  for {
+    //    answer   <- teamService.createTeam.invoke(CreateTeamRequest("Panasonic", "NED"))
+    //    response <- teamService.getTeamByName("Panasonic").invoke()
+    //  } yield {
+    //    response.id should equal(answer.id)
+    //  }
+    //}
 
     //"fail with empty name on change team name" in {
     //  teamService.changeTeamName(answer.answer).invoke(api.TeamChangeNameFields("")).map { answer =>
@@ -92,5 +112,23 @@ class TeamServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndAfte
     //    answer.active should equal (true)
     //  } 
     //} 
-  //}
+  }
+
+  def awaitSuccess[T](maxDuration: FiniteDuration = 10.seconds,
+                      checkEvery: FiniteDuration = 100.milliseconds)(block: => Future[T]): Future[T] = {
+    val checkUntil = System.currentTimeMillis() + maxDuration.toMillis
+
+    def doCheck(): Future[T] = {
+      block.recoverWith {
+        case recheck if checkUntil > System.currentTimeMillis() =>
+          val timeout = Promise[T]()
+          server.application.actorSystem.scheduler.scheduleOnce(checkEvery) {
+            timeout.completeWith(doCheck())
+          }(server.executionContext)
+          timeout.future
+      }
+    }
+
+    doCheck()
+  }
 }

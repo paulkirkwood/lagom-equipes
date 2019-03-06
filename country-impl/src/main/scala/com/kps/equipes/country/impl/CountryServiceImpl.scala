@@ -37,13 +37,17 @@ class CountryServiceImpl(countryRepository: CountryRepository,
 
   override def getCountryByName(name: String): ServiceCall[NotUsed, Country] =
     ServiceCall { _ =>
-      countryRepository.getCountryByName(name).map(country =>
-        Country(country.get.id, country.get.name, country.get.isoCode))
+      countryRepository.getCountryByName(name).map {
+        case Some(row) => Country(row.getUUID("id"), row.getString("name"), row.getString("isoCode"))
+        case None      => throw NotFound(s"Cannot find a country with '${name}' name")
     }
+  }
 
   override def getCountryByISOCode(isoCode: String): ServiceCall[NotUsed, Country] =
     ServiceCall { _ =>
-      countryRepository.getCountryByISOCode(isoCode).map(country =>
-        Country(country.get.id, country.get.name, country.get.isoCode))
+      countryRepository.getCountryByISOCode(isoCode).map {
+        case Some(row) => Country(row.getUUID("id"), row.getString("name"), row.getString("isoCode"))
+        case None => throw NotFound(s"Cannot find a country with '${isoCode}' ISO code")
+      }
     }
 }

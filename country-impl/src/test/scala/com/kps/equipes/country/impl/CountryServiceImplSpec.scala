@@ -23,7 +23,7 @@ class CountryServiceImplSpec extends AsyncWordSpec with Matchers with BeforeAndA
     "create a country" in {
       for {
         countryID <- countryService.createCountry.invoke(CreateCountryRequest("United Kingdom", "GBR"))
-        response <- countryService.getCountry(countryID.id).invoke()
+        response  <- countryService.getCountry(countryID.id).invoke()
       } yield {
         response.name should equal("United Kingdom")
         response.isoCode should equal("GBR")

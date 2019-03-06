@@ -10,18 +10,18 @@ import com.lightbend.lagom.scaladsl.server._
 import com.softwaremill.macwire._
 import play.api.libs.ws.ahc.AhcWSComponents
 
-class TeamServiceLoader extends LagomApplicationLoader {
+class TeamApplicationLoader extends LagomApplicationLoader {
 
   override def load(context: LagomApplicationContext): LagomApplication =
-    new TeamServiceApplication(context) {
+    new TeamApplication(context) {
       override def serviceLocator: ServiceLocator = NoServiceLocator
     }
 
   override def loadDevMode(context: LagomApplicationContext): LagomApplication =
-    new TeamServiceApplication(context) with LagomDevModeComponents
+    new TeamApplication(context) with LagomDevModeComponents
 }
 
-abstract class TeamServiceApplication(context: LagomApplicationContext)
+abstract class TeamApplication(context: LagomApplicationContext)
   extends LagomApplication(context)
     with CassandraPersistenceComponents
     with AhcWSComponents {
@@ -34,7 +34,7 @@ abstract class TeamServiceApplication(context: LagomApplicationContext)
 
   persistentEntityRegistry.register(wire[TeamEntity])
 
-  readSide.register(wire[TeamProcessor])
+  readSide.register(wire[TeamEventProcessor])
 
   lazy val countryService = serviceClient.implement[CountryService]
 }

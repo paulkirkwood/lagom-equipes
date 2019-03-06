@@ -46,18 +46,18 @@ class TeamServiceImpl(teamRepository: TeamRepository,
         teamEntityRef(id).ask(ChangeTeamName(req.name))
     }
  
-  override def changeTeamStatus(id: UUID): ServiceCall[ChangeTeamStatusRequest, Done] =
-    ServiceCall { req =>
-      teamEntityRef(id).ask(ChangeTeamStatus(req.active))
-    }
+  override def changeTeamStatus(id: UUID): ServiceCall[ChangeTeamStatusRequest, Done] = ServiceCall { req =>
+    teamEntityRef(id).ask(ChangeTeamStatus(req.active))
+  }
 
-  override def getTeams: ServiceCall[NotUsed, GetTeamsResponse] =
-    ServiceCall { _ =>
-      teamRepository.getTeams.map(teams => GetTeamsResponse(teams))
-    }
+  override def getTeams: ServiceCall[NotUsed, GetTeamsResponse] = ServiceCall { _ =>
+    teamRepository.getTeams.map(teams => GetTeamsResponse(teams))
+  }
 
-  override def getTeamByName(name: String): ServiceCall[NotUsed, Team] =
-    ServiceCall { _ =>
-      teamRepository.getTeamByName(name).map(team => Team(team.get.id, team.get.name, team.get.active, team.get.countryId))
+  override def getTeamByName(name: String): ServiceCall[NotUsed, Team] = ServiceCall { _ =>
+    teamRepository.getTeamByName(name).map {
+      case Some(row) => Team(row.getUUID("id"), row.getString("name"), row.getBool("active"), row.getUUID("countryId"))
+      case None      => throw NotFound(s"Team ${name} does not exist")
     }
+  }
 }

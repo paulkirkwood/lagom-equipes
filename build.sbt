@@ -52,5 +52,6 @@ lazy val teamImpl = (project in file("team-impl"))
   .settings(lagomForkedTestSettings: _*)
   .dependsOn(countryApi, teamApi)
 
-lagomCassandraEnabled in ThisBuild := false
-lagomUnmanagedServices in ThisBuild := Map("cas_native" -> "http://localhost:9042")
+lagomCassandraCleanOnStart in ThisBuild := true
+//lagomCassandraEnabled in ThisBuild := false
+//lagomUnmanagedServices in ThisBuild := Map("cas_native" -> "http://localhost:9042")

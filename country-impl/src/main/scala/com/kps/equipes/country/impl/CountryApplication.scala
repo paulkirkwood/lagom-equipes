@@ -9,7 +9,7 @@ import com.lightbend.lagom.scaladsl.server._
 import com.softwaremill.macwire._
 import play.api.libs.ws.ahc.AhcWSComponents
 
-class CountryServiceLoader extends LagomApplicationLoader {
+class CountryApplicationLoader extends LagomApplicationLoader {
 
   override def load(context: LagomApplicationContext): LagomApplication =
     new CountryServiceApplication(context) {
@@ -37,5 +37,5 @@ abstract class CountryServiceApplication(context: LagomApplicationContext)
   lazy val repository: CountryRepository = wire[CountryRepository]
 
   // Register the lagom persistent read side processor persistent entity
-  readSide.register(wire[CountryProcessor])
+  readSide.register(wire[CountryEventProcessor])
 }
